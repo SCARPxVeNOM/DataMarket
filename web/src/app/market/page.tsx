@@ -6,7 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { AirKitLogin } from "@/components/AirKitLogin";
 import { useAirKit } from "@/contexts/AirKitContext";
 import { getAirService } from "@/lib/airkit";
-import abiJson from "../../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
+import abiJson from "../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
 
 const CONTRACT_ADDRESS = "0x9Ba2C58C733119d896256DA85b2EAdfFE74A657F";
 

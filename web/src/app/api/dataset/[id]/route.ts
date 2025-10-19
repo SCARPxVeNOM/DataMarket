@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createPublicClient, http } from "viem";
 import { defineChain } from "viem";
-import abiJson from "../../../../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
+import abiJson from "../../../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
 
 const mocaTestnet = defineChain({
   id: 222888,
