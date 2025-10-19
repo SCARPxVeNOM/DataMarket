@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createPublicClient, http } from "viem";
 import { defineChain } from "viem";
-import abiJson from "../../../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
+import { DataMarketABI } from "../../../../lib/contract";
 
 const mocaTestnet = defineChain({
   id: 222888,
@@ -33,7 +33,7 @@ export async function GET(
     // Read dataset from contract
     const dataset = await client.readContract({
       address: CONTRACT_ADDRESS as `0x${string}`,
-      abi: abiJson.abi,
+      abi: DataMarketABI,
       functionName: "datasets",
       args: [datasetId],
     }) as any;

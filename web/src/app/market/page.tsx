@@ -6,7 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { AirKitLogin } from "@/components/AirKitLogin";
 import { useAirKit } from "@/contexts/AirKitContext";
 import { getAirService } from "@/lib/airkit";
-import abiJson from "../../../artifacts/contracts/DataMarket.sol/DataMarket.json";
+import { DataMarketABI } from "../../lib/contract";
 
 const CONTRACT_ADDRESS = "0x9Ba2C58C733119d896256DA85b2EAdfFE74A657F";
 
@@ -40,7 +40,7 @@ export default function MarketPage() {
   // Read nextId from contract to know how many datasets exist
   const { data: nextId } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
-    abi: (abiJson as any).abi,
+    abi: DataMarketABI,
     functionName: "nextId",
   });
 
@@ -138,7 +138,7 @@ export default function MarketPage() {
       
       const tx = await writeContractAsync({
         address: CONTRACT_ADDRESS as `0x${string}`,
-        abi: (abiJson as any).abi,
+        abi: DataMarketABI,
         functionName: "list",
         args: [uri, priceWei],
       });
@@ -188,7 +188,7 @@ export default function MarketPage() {
       
       const tx = await writeContractAsync({
         address: CONTRACT_ADDRESS as `0x${string}`,
-        abi: (abiJson as any).abi,
+        abi: DataMarketABI,
         functionName: "buy",
         args: [BigInt(dataset.id)],
         value: priceWei,
