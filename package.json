@@ -1,17 +1,26 @@
 {
-  "name": "hardhat-project",
+  "name": "datamarket-protocol",
+  "version": "1.0.0",
+  "description": "A decentralized data marketplace built on Moca Chain with AIRKit identity verification",
+  "private": true,
   "scripts": {
-    "compile": "hardhat compile",
-    "deploy:moca": "hardhat run scripts/deploy.js --network mocaTestnet"
+    "build": "cd web && npm run build",
+    "dev": "cd web && npm run dev",
+    "start": "cd web && npm run start",
+    "install": "cd web && npm install"
   },
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
-    "dotenv": "^17.2.3",
-    "hardhat": "^2.26.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "viem": "^2.38.3"
+  "keywords": [
+    "blockchain",
+    "data-marketplace",
+    "moca-chain",
+    "airkit",
+    "nextjs",
+    "web3"
+  ],
+  "author": "Aryan Anand",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SCARPxVeNOM/DataMarket.git"
   }
 }
