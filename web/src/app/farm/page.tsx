@@ -9,6 +9,8 @@ import { useAirKit } from "@/contexts/AirKitContext";
 import { getAirService } from "@/lib/airkit";
 import { generateDatasetQualityProof } from "@/lib/zk-proofs";
 import { selectiveDisclose, createDatasetPreview } from "@/lib/selective-disclosure";
+import { useGame } from "@/contexts/GameContext";
+import type { DataMetrics } from "@/lib/point-system";
 
 export default function FarmPage() {
   const [historyJson, setHistoryJson] = useState<string>("");
@@ -19,6 +21,7 @@ export default function FarmPage() {
   const [consentGiven, setConsentGiven] = useState(false);
   const [zkProof, setZkProof] = useState<any>(null);
   const { isLoggedIn: airLoggedIn } = useAirKit();
+  const { addPoints, recordCredentialIssued, awardBadge } = useGame();
   
   // Real-time tracking state
   const [isTracking, setIsTracking] = useState(false);
@@ -213,6 +216,12 @@ export default function FarmPage() {
     const dataJson = JSON.stringify(collectedData, null, 2);
     setHistoryJson(dataJson);
     setTrackingData(collectedData);
+    // Award points for a completed tracked session
+    const sessionPoints = 10 + Math.min(40, trackedPages.length * 2) + Math.min(20, Math.floor(clickCount / 10)) + Math.min(20, Math.floor(scrollCount / 20));
+    addPoints(sessionPoints, "tracked-session");
+    if (trackedPages.length >= 5) {
+      awardBadge({ id: "session-5pages", name: "Explorer", description: "Visited 5+ pages in a session" });
+    }
     
     alert(`✅ Tracking Stopped!\n\n📊 Collected:\n- ${trackedPages.length} pages visited\n- ${clickCount} clicks\n- ${scrollCount} scrolls\n- ${Math.floor(trackingDuration / 1000)} seconds tracked\n- ${collectedData.resources?.length || 0} resources loaded\n\nNow click "Issue Dataset Credential" to continue.`);
   }
@@ -402,7 +411,34 @@ export default function FarmPage() {
       if (!data.success) throw new Error(data.error);
       
       setDatasetCredential(data.credential);
-      alert(`✅ Dataset credential issued!\n\n📊 Dataset Quality:\n- ${siteCount} browsing records\n- ${totalInteractions} total interactions\n- ${Math.floor(totalTimeSpent / 3600)} hours tracked\n\n🔐 ZK Proof: Proves quality without revealing raw data\n🔒 AIR Authenticated: Cryptographically secure`);
+      
+      // Build metrics for point calculation
+      const uniqueDomains = parsed.privacyMetrics?.uniqueDomains || 
+        (parsed.browsingHistory ? new Set(parsed.browsingHistory.map((p: any) => {
+          try { return new URL(p.url || p).hostname; } catch { return ''; }
+        }).filter(Boolean)).size : 0);
+      
+      const metrics: DataMetrics = {
+        siteCount,
+        totalInteractions,
+        totalTimeSpent,
+        trackingDuration: parsed.trackingDuration || parsed.privacyMetrics?.trackingDuration,
+        resourcesLoaded: parsed.resources?.length || 0,
+        uniqueDomains,
+        dataQuality: totalInteractions > 1000 ? "premium" : siteCount >= 10 ? "standard" : "basic",
+        categories: parsed.categories || [],
+        hasPerformanceMetrics: !!(parsed.performance || parsed.navigationTiming),
+        hasDeviceSpecs: !!(parsed.screen || parsed.browser),
+        hasNetworkData: !!(parsed.connection),
+        hasInteractionData: !!(parsed.interactions),
+        dataSize: historyJson ? new Blob([historyJson]).size : undefined,
+      };
+      
+      // Gamification: issuing credential -> points + streak + potential badges (based on data complexity)
+      recordCredentialIssued(metrics);
+      
+      const pointsEarned = metrics.totalInteractions > 1000 ? "Premium" : siteCount >= 10 ? "High" : "Standard";
+      alert(`✅ Dataset credential issued!\n\n📊 Dataset Quality: ${pointsEarned}\n- ${siteCount} browsing records\n- ${totalInteractions} total interactions\n- ${Math.floor(totalTimeSpent / 3600)} hours tracked\n\n🎮 Points awarded based on data complexity!\n🔐 ZK Proof: Proves quality without revealing raw data\n🔒 AIR Authenticated: Cryptographically secure`);
     } catch (e: any) {
       alert(e?.message || "Failed to issue credential.");
     } finally {
@@ -497,6 +533,9 @@ export default function FarmPage() {
             </a>
             <a href="/market" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
               Marketplace
+            </a>
+            <a href="/seasons" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
+              Seasons
             </a>
           </nav>
           

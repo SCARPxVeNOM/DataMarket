@@ -53,6 +53,9 @@ export default function Home() {
             <a href="/market" className="text-xl font-sm font-bold text-gray-600 hover:text-blue-600 transition">
               Marketplace
             </a>
+            <a href="/seasons" className="text-xl font-sm font-bold text-gray-600 hover:text-blue-600 transition">
+              Seasons
+            </a>
           </nav>
           
           <ConnectButton />

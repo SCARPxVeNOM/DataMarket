@@ -4,6 +4,7 @@ import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Providers } from "./providers";
 import { AirKitProvider } from "@/contexts/AirKitContext";
+import { GameProvider } from "@/contexts/GameContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <AirKitProvider>
-            {children}
+            <GameProvider>
+              {children}
+            </GameProvider>
           </AirKitProvider>
         </Providers>
       </body>

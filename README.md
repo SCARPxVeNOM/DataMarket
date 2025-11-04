@@ -19,6 +19,9 @@ DataMarket Protocol is a cutting-edge decentralized application that revolutioni
 - **💎 Verifiable Credentials**: W3C-compliant credentials for identity and data attributes
 - **🌐 Decentralized Storage**: IPFS integration via Pinata for immutable data storage
 - **💰 Cryptocurrency Trading**: MOCA token-based marketplace with smart contracts
+- **🎮 Gamified Credential Farming**: Points, streaks, badges, and leaderboard system
+- **📈 Dynamic Point System**: Points based on data complexity and marketplace activity
+- **🏆 Real-Time Leaderboard**: Blockchain-integrated rankings updated every 30 seconds
 - **🎨 Modern UI/UX**: Clean, responsive design with real-time tracking dashboard
 
 ## 🏗️ Architecture
@@ -28,15 +31,22 @@ DataMarket Protocol
 ├── 🌐 Frontend (Next.js 15)
 │   ├── Homepage - AIRKit login & protocol overview
 │   ├── Farm - Data collection & credential issuance
-│   └── Marketplace - Dataset trading & verification
+│   ├── Marketplace - Dataset trading & verification
+│   └── Seasons - Gamification hub (points, badges, leaderboard)
 ├── ⛓️ Blockchain (Moca Chain Testnet)
 │   ├── Smart Contracts - DataMarket.sol
 │   ├── Token Economics - MOCA cryptocurrency
-│   └── Decentralized Storage - IPFS integration
+│   ├── Decentralized Storage - IPFS integration
+│   └── Real-Time Leaderboard - On-chain rankings
 ├── 🔑 Identity Layer (AIRKit)
 │   ├── SSO Authentication - Cross-app login
 │   ├── Embedded Wallet - AIR smart accounts
 │   └── Credential System - Verifiable credentials
+├── 🎮 Gamification System
+│   ├── Point Calculation - Dynamic scoring based on data complexity
+│   ├── Streak System - Daily credential issuance bonuses
+│   ├── Badge Collection - Achievement milestones
+│   └── Leaderboard - Real-time blockchain rankings
 └── 🛡️ Privacy Layer
     ├── Zero-Knowledge Proofs - Selective disclosure
     ├── Consent Management - GDPR/CCPA compliance
@@ -95,14 +105,15 @@ DataMarket Protocol
 
 ## 📱 User Journey
 
-### For Data Sellers
+### For Data Sellers (Credential Farmers)
 
 1. **🔑 Login with AIR** - Single sign-on authentication
 2. **✅ Verify Identity** - Complete AIRKit humanhood verification
 3. **📊 Start Data Collection** - Real-time browser activity tracking
-4. **🛡️ Issue Credentials** - Generate privacy-preserving proofs
+4. **🛡️ Issue Credentials** - Generate privacy-preserving proofs → **Earn points based on data complexity**
 5. **📤 Upload to IPFS** - Decentralized storage with metadata
-6. **💰 List on Marketplace** - Set price and sell your data
+6. **💰 List on Marketplace** - Set price and sell your data → **Earn bonus listing points**
+7. **🏆 Track Progress** - View points, streaks, badges, and leaderboard ranking
 
 ### For Data Buyers
 
@@ -110,6 +121,71 @@ DataMarket Protocol
 2. **🔐 Verify as Buyer** - Complete identity verification
 3. **💳 Purchase Dataset** - Pay with MOCA tokens
 4. **📥 Access Data** - Download from IPFS with credentials
+
+## 🎮 Gamification System
+
+### How Points Work
+
+DataMarket Protocol features a comprehensive gamification system that rewards users for credential farming and marketplace participation:
+
+#### 1. **Data Farming & Complexity** (25-400+ points)
+- **Basic Datasets** (1-4 sites): 25 points
+- **Medium Datasets** (5-9 sites): 50 points
+- **High Datasets** (10-19 sites): 100 points
+- **Premium Datasets** (20+ sites): 150 points
+- **Real-Time Tracking**: 5 points/minute (max 200) + 0.1 points/interaction
+- **Interaction Data**: 10-100 points based on clicks/scrolls
+- **Performance Metrics**: +40 points
+- **Device Specs**: +30 points
+- **Network Data**: +25 points
+- **Data Quality Multiplier**: Premium (1.5x), Standard (1.2x), Basic (1x)
+
+#### 2. **Credential Issuance** (50+ base points)
+- Base points: 50
+- Quality multipliers: Premium (1.5x), Standard (1.2x)
+- Real-time tracking sessions earn bonus points
+- Points scale with data complexity and diversity
+
+#### 3. **Daily Streaks & Bonuses**
+- Maintain daily streak by issuing credentials
+- Streak bonus: +5 points per day (max +100)
+- Consistent engagement multiplies earnings
+- Unlocks special badges (e.g., 7-Day Streak)
+
+#### 4. **Marketplace Activity**
+- **Listing Bonus**: 15-100 points based on listing price
+  - Basic (0.01-0.09 MOCA): 15 points
+  - Medium (0.1-0.49 MOCA): 30 points
+  - High (0.5-0.99 MOCA): 60 points
+  - Premium (1.0+ MOCA): 100 points
+- **Sale Bonus**: 200 points per MOCA earned
+
+#### 5. **Badges & Milestones**
+- **Starter**: 100 points
+- **Grinder**: 500 points
+- **Master Farmer**: 1000 points
+- **7-Day Streak**: Issue credentials 7 days in a row
+- **Explorer**: Collected data from 20+ sites
+- **Highly Interactive**: 1000+ interactions tracked
+
+### Seasons Page Features
+
+The **Seasons** page (`/seasons`) provides a comprehensive gamification hub:
+
+- **📊 Scorecards**: Total points, daily streak, badge count
+- **📈 Next Badge Progress**: Visual progress bar toward next achievement
+- **🔥 Streak Bonus Indicator**: Shows bonus points for next credential
+- **📋 Recent Activity Feed**: Last 5 actions with points earned
+- **🏆 Live Leaderboard**: Real-time blockchain rankings (updates every 30s)
+- **📖 How Points Work**: Collapsible guide explaining the point system
+
+### Real-Time Blockchain Integration
+
+- **Live Leaderboard**: Fetched from Moca Chain contract
+- **Auto-Refresh**: Updates every 30 seconds
+- **No Mock Data**: All rankings come from on-chain data
+- **User Highlighting**: Your position highlighted in blue
+- **Medal System**: 🥇🥈🥉 for top 3 positions
 
 ## 🔧 Technical Stack
 
@@ -252,17 +328,25 @@ web/
 │   │   ├── page.tsx           # Homepage
 │   │   ├── farm/page.tsx      # Data farming
 │   │   ├── market/page.tsx    # Marketplace
+│   │   ├── seasons/page.tsx   # Gamification hub
 │   │   ├── api/               # API routes
+│   │   │   ├── dataset/       # Dataset endpoints
+│   │   │   ├── leaderboard/   # Leaderboard API
+│   │   │   ├── pinata/        # IPFS upload
+│   │   │   └── airkit/        # Credential issuance
 │   │   └── layout.tsx         # Root layout
 │   ├── components/            # React components
 │   │   ├── AirKitLogin.tsx   # AIRKit authentication
 │   │   ├── AirWallet.tsx     # Wallet management
 │   │   └── VerifyIdentity.tsx # Identity verification
 │   ├── contexts/              # React contexts
-│   │   └── AirKitContext.tsx # Global AIRKit state
+│   │   ├── AirKitContext.tsx # Global AIRKit state
+│   │   └── GameContext.tsx   # Gamification state
 │   └── lib/                   # Utilities
 │       ├── airkit.ts         # AIRKit service
 │       ├── zk-proofs.ts      # Zero-knowledge proofs
+│       ├── point-system.ts   # Point calculation engine
+│       ├── contract.ts       # Contract ABI
 │       └── selective-disclosure.ts # Privacy features
 ├── contracts/                 # Smart contracts
 │   └── DataMarket.sol        # Main marketplace contract
@@ -309,7 +393,8 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 🔗 Links
 
-- **Website**: [DataMarket Protocol](https://datamarket-protocol.vercel.app)
+- **Live Demo**: [data-market-nu.vercel.app](https://data-market-nu.vercel.app)
+- **GitHub Repository**: [SCARPxVeNOM/DataMarket](https://github.com/SCARPxVeNOM/DataMarket)
 - **Documentation**: [Moca Network Docs](https://docs.moca.network)
 - **AIRKit SDK**: [AIRKit Documentation](https://docs.moca.network/airkit)
 - **Discord**: [Moca Community](https://discord.gg/moca)

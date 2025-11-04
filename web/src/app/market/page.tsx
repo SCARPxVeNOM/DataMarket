@@ -7,6 +7,7 @@ import { AirKitLogin } from "@/components/AirKitLogin";
 import { useAirKit } from "@/contexts/AirKitContext";
 import { getAirService } from "@/lib/airkit";
 import { DataMarketABI } from "../../lib/contract";
+import { useGame } from "@/contexts/GameContext";
 
 const CONTRACT_ADDRESS = "0x9Ba2C58C733119d896256DA85b2EAdfFE74A657F";
 
@@ -23,6 +24,7 @@ interface Dataset {
 export default function MarketPage() {
   const { address } = useAccount();
   const { isLoggedIn: airLoggedIn } = useAirKit();
+  const { recordListing } = useGame();
   const [uri, setUri] = useState("");
   const [price, setPrice] = useState("0.01");
   const [requireVerification, setRequireVerification] = useState(false);
@@ -145,7 +147,10 @@ export default function MarketPage() {
       
       console.log("✅ Transaction sent:", tx);
       
-      alert(`✅ Dataset Listed!\n\nTransaction: ${tx}\nPrice: ${price} MOCA\nCID: ${uri}\n\nRefresh the page in a few seconds to see your listing.`);
+      // Award points for listing
+      recordListing(uri, parseFloat(price));
+      
+      alert(`✅ Dataset Listed!\n\nTransaction: ${tx}\nPrice: ${price} MOCA\nCID: ${uri}\n\n🎮 Points awarded for listing!\n\nRefresh the page in a few seconds to see your listing.`);
       
       // Clear form
       setUri("");
@@ -196,6 +201,9 @@ export default function MarketPage() {
       
       console.log("✅ Purchase transaction sent:", tx);
       
+      // Note: Sale points are awarded to seller, not buyer
+      // Seller's points will be updated when they check their stats
+      
       alert(`✅ Purchase Successful!\n\nTransaction: ${tx}\nDataset ID: ${dataset.id}\nPaid: ${dataset.price} MOCA\n\nYou now have access to:\nhttps://gateway.pinata.cloud/ipfs/${dataset.uri}`);
       
       // Open IPFS link
@@ -235,6 +243,9 @@ export default function MarketPage() {
             </a>
             <a href="/market" className="text-sm font-semibold text-black hover:text-blue-600 transition border-b-2 border-blue-600">
               Marketplace
+            </a>
+            <a href="/seasons" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
+              Seasons
             </a>
           </nav>
           
@@ -370,7 +381,7 @@ export default function MarketPage() {
             
             <button
               onClick={list}
-              disabled={loading || isPending || !address}
+              disabled={!isClient || loading || isPending || !address}
               className="w-full rounded-lg bg-gradient-to-r from-green-600 to-blue-600 px-4 py-3 text-sm font-semibold text-white hover:from-green-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
             >
               {!isClient ? "🚀 List on Moca Chain" : (loading || isPending) ? "⏳ Listing on Blockchain..." : !address ? "⚠️ Connect Wallet to List" : "🚀 List on Moca Chain"}
